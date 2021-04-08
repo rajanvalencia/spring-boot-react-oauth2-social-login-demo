@@ -16,6 +16,14 @@ spring:
       oauth2:
         client:
           registration:
+            apple:
+               client-id: apple-client-id
+               client-secret: apple-client-secret
+               authorization-grant-type: authorization_code
+               redirect-uri: '{baseUrl}/{action}/oauth2/code/{registrationId}'
+               scope: openid, name, email
+               client-name: Apple
+               client-authentication-method: post
             google:
               clientId: 5014057553-8gm9um6vnli3cle5rgigcdjpdrid14m9.apps.googleusercontent.com
               clientSecret: tWZKVLxaD_ARWsriiiUFYoIk
@@ -38,6 +46,11 @@ spring:
                 - user:email
                 - read:user
           provider:
+            apple:
+               authorization-uri: https://appleid.apple.com/auth/authorize?response_mode=form_post
+               token-uri: https://appleid.apple.com/auth/token
+               jwk-set-uri: https://appleid.apple.com/auth/keys
+               user-name-attribute: sub
             facebook:
               authorizationUri: https://www.facebook.com/v3.0/dialog/oauth
               tokenUri: https://graph.facebook.com/v3.0/oauth/access_token

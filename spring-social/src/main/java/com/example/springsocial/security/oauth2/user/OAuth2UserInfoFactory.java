@@ -14,6 +14,8 @@ public class OAuth2UserInfoFactory {
             return new FacebookOAuth2UserInfo(attributes);
         } else if (registrationId.equalsIgnoreCase(AuthProvider.github.toString())) {
             return new GithubOAuth2UserInfo(attributes);
+        } else if (registrationId.equalsIgnoreCase(AuthProvider.apple.toString())){
+        	return new AppleOidcUserInfo(attributes);
         } else {
             throw new OAuth2AuthenticationProcessingException("Sorry! Login with " + registrationId + " is not supported yet.");
         }
