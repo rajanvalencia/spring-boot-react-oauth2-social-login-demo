@@ -27,6 +27,13 @@
     margin-top: 10px;
 }
 
+.social-btn i {
+    height: 32px;
+    float: left;
+    margin-top: 5px;
+    margin-left: 3px;
+}
+
 .social-btn.google {
     margin-top: 7px;
 }

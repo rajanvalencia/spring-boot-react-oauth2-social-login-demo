@@ -1,21 +1,23 @@
 import React, { Component } from 'react';
 import './Signup.css';
 import { Link, Redirect } from 'react-router-dom'
-import { GOOGLE_AUTH_URL, FACEBOOK_AUTH_URL, GITHUB_AUTH_URL } from '../../constants';
+import { APPLE_AUTH_URL, GOOGLE_AUTH_URL, FACEBOOK_AUTH_URL, GITHUB_AUTH_URL } from '../../constants';
 import { signup } from '../../util/APIUtils';
 import fbLogo from '../../img/fb-logo.png';
 import googleLogo from '../../img/google-logo.png';
 import githubLogo from '../../img/github-logo.png';
 import Alert from 'react-s-alert';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faApple } from '@fortawesome/free-brands-svg-icons';
 
 class Signup extends Component {
     render() {
-        if(this.props.authenticated) {
+        if (this.props.authenticated) {
             return <Redirect
                 to={{
-                pathname: "/",
-                state: { from: this.props.location }
-            }}/>;            
+                    pathname: "/",
+                    state: { from: this.props.location }
+                }} />;
         }
 
         return (
@@ -45,6 +47,8 @@ class SocialSignup extends Component {
                     <img src={fbLogo} alt="Facebook" /> Sign up with Facebook</a>
                 <a className="btn btn-block social-btn github" href={GITHUB_AUTH_URL}>
                     <img src={githubLogo} alt="Github" /> Sign up with Github</a>
+                <a className="btn btn-block social-btn" href={APPLE_AUTH_URL}>
+                    <i><FontAwesomeIcon icon={faApple} color="#000" size="2x" /></i > Sign up with Apple</a>
             </div>
         );
     }
@@ -64,50 +68,50 @@ class SignupForm extends Component {
 
     handleInputChange(event) {
         const target = event.target;
-        const inputName = target.name;        
+        const inputName = target.name;
         const inputValue = target.value;
 
         this.setState({
-            [inputName] : inputValue
-        });        
+            [inputName]: inputValue
+        });
     }
 
     handleSubmit(event) {
-        event.preventDefault();   
+        event.preventDefault();
 
         const signUpRequest = Object.assign({}, this.state);
 
         signup(signUpRequest)
-        .then(response => {
-            Alert.success("You're successfully registered. Please login to continue!");
-            this.props.history.push("/login");
-        }).catch(error => {
-            Alert.error((error && error.message) || 'Oops! Something went wrong. Please try again!');            
-        });
+            .then(response => {
+                Alert.success("You're successfully registered. Please login to continue!");
+                this.props.history.push("/login");
+            }).catch(error => {
+                Alert.error((error && error.message) || 'Oops! Something went wrong. Please try again!');
+            });
     }
 
     render() {
         return (
             <form onSubmit={this.handleSubmit}>
                 <div className="form-item">
-                    <input type="text" name="name" 
+                    <input type="text" name="name"
                         className="form-control" placeholder="Name"
-                        value={this.state.name} onChange={this.handleInputChange} required/>
+                        value={this.state.name} onChange={this.handleInputChange} required />
                 </div>
                 <div className="form-item">
-                    <input type="email" name="email" 
+                    <input type="email" name="email"
                         className="form-control" placeholder="Email"
-                        value={this.state.email} onChange={this.handleInputChange} required/>
+                        value={this.state.email} onChange={this.handleInputChange} required />
                 </div>
                 <div className="form-item">
-                    <input type="password" name="password" 
+                    <input type="password" name="password"
                         className="form-control" placeholder="Password"
-                        value={this.state.password} onChange={this.handleInputChange} required/>
+                        value={this.state.password} onChange={this.handleInputChange} required />
                 </div>
                 <div className="form-item">
                     <button type="submit" className="btn btn-block btn-primary" >Sign Up</button>
                 </div>
-            </form>                    
+            </form>
 
         );
     }
