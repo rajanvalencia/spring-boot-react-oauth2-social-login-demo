@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
@@ -27,6 +26,9 @@ public class CustomOidcUserService implements OAuth2UserService<OidcUserRequest,
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private CustomOAuth2UserService customOAuth2UserService;
 
 	@Override
 	public OidcUser loadUser(OidcUserRequest oidcUserRequest) throws OAuth2AuthenticationException {
@@ -60,28 +62,12 @@ public class CustomOidcUserService implements OAuth2UserService<OidcUserRequest,
 						"Looks like you're signed up with " + user.getProvider() + " account. Please use your "
 								+ user.getProvider() + " account to login.");
 			}
-			user = updateExistingUser(user, oAuth2UserInfo);
+			user = customOAuth2UserService.updateExistingUser(user, oAuth2UserInfo);
 		} else {
-			user = registerNewUser(oidcUserRequest, oAuth2UserInfo);
+			user = customOAuth2UserService.registerNewUser(oidcUserRequest, oAuth2UserInfo);
 		}
 
 		return UserPrincipal.create(user, oidcUserRequest.getAdditionalParameters());
 	}
 
-	private User registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
-        User user = new User();
-
-        user.setProvider(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()));
-        user.setProviderId(oAuth2UserInfo.getId());
-        user.setName(oAuth2UserInfo.getName());
-        user.setEmail(oAuth2UserInfo.getEmail());
-        user.setImageUrl(oAuth2UserInfo.getImageUrl());
-        return userRepository.save(user);
-    }
-
-    private User updateExistingUser(User existingUser, OAuth2UserInfo oAuth2UserInfo) {
-        existingUser.setName(oAuth2UserInfo.getName());
-        existingUser.setImageUrl(oAuth2UserInfo.getImageUrl());
-        return userRepository.save(existingUser);
-    }
 }
